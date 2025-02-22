@@ -320,11 +320,40 @@ async function initializeCategories() {
 startSearchButton.addEventListener('click', updateProducts);
 cancelSearchButton.addEventListener('click', cancelSearch);
 
+// Expose currently displayed products for discount manager
+window.getCurrentlyDisplayedProducts = function() {
+    return new Promise((resolve, reject) => {
+        try {
+            const products = Array.from(document.querySelectorAll('#productsGrid > div:not(template)'))
+                .map(productElement => {
+                    const mainProduct = {
+                        articleNumber: productElement.dataset.articleNumber,
+                        uvp: productElement.dataset.uvp,
+                        childProducts: []
+                    };
+
+                    // Get child products if any
+                    const childElements = productElement.querySelectorAll('.child-product');
+                    childElements.forEach(childElement => {
+                        mainProduct.childProducts.push({
+                            articleNumber: childElement.dataset.articleNumber,
+                            uvp: childElement.dataset.uvp
+                        });
+                    });
+
+                    return mainProduct;
+                });
+            resolve(products);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 // Initialize dropdowns
 document.addEventListener('DOMContentLoaded', async () => {
     await Promise.all([
         initializeManufacturers(),
         initializeCategories()
     ]);
-    await updateProducts();
 });
