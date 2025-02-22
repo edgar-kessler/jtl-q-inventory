@@ -1,10 +1,12 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
+const ipcMain = require('electron').ipcMain;
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, 'assets/logo.png'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -12,7 +14,7 @@ function createWindow() {
   });
   win.loadFile('index.html');
   // Uncomment the following line to open DevTools automatically
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
 
 // IPC Handler für Save Dialog
